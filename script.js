@@ -1,6 +1,6 @@
 class start extends Phaser.Scene {
     constructor() {
-        super('d1');
+        super('start');
     }
     preload() {
         this.load.path = './assets/';
