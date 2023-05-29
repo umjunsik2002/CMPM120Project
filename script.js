@@ -1,5 +1,5 @@
-var isLeveloneLock = false;
-var isLeveltwoLock = false;
+var isLeveloneLock = true;
+var isLeveltwoLock = true;
 var isLevelthreeLock = true;
 
 class start extends Phaser.Scene {
