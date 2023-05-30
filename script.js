@@ -2,26 +2,6 @@ var isLeveloneLock = true;
 var isLeveltwoLock = true;
 var isLevelthreeLock = true;
 
-class start extends Phaser.Scene {
-	constructor() {
-		super('start');
-	}
-	preload() {
-		this.load.path = './assets/';
-	}
-	create() {
-		this.add.text(50, 50, "Adventure awaits!").setFontSize(50).setColor("#000000");
-		this.add.text(50, 100, "Click anywhere to begin.").setFontSize(20).setColor("#000000");
-		this.input.on('pointerdown', () => {
-            this.cameras.main.fade(1000, 0,0,0);
-			this.time.delayedCall(1000, () => this.scene.start('LS'));
-		});
-	}
-	update() {
-    
-	}
-}
-
 class LS extends Phaser.Scene {
 	constructor() {
 			super('LS');
@@ -193,7 +173,7 @@ let config = {
 		width: 1280,
 		height: 720,
 		backgroundColor: '#ffffff',
-		scene: [start, LS, L0, L0_1, L1, L2, L3]
+		scene: [LS, L0, L0_1, L1, L2, L3]
 }
 
 let game = new Phaser.Game(config);
