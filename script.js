@@ -1,6 +1,8 @@
 var isLeveloneLock = true;
 var isLeveltwoLock = true;
 var isLevelthreeLock = true;
+const KEY = 0;
+const items = [false];
 
 class LS extends Phaser.Scene {
 	constructor() {
@@ -17,6 +19,11 @@ class LS extends Phaser.Scene {
 			this.load.image('l3u','/Level3_unlocked.png');
 	}
 	create() {
+		// reset items
+		for (let i = 0; i < items.length; i++) {
+			items[i] = false;
+		  }
+		  
 		this.add.image(180, 360, 'l0u')
         .setInteractive()
         .on('pointerdown', () => {
@@ -73,9 +80,12 @@ class L0 extends Phaser.Scene {
 	preload() {
 		this.load.path = './assets/Level0/';
 		this.load.image('background','/level0_background.png');
-		this.load.image('unlocked_door','/unlocked_door.png');
-		this.load.image('locked_door','/locked_door.png');
+		//this.load.image('unlocked_door','/unlocked_door.png');
+		//this.load.image('locked_door','/locked_door.png');
+		this.load.image('unlocked_door','/testdoor.png');
+		this.load.image('locked_door','/testdoor.png');
 		this.load.image('key','/key.png');
+		this.load.image('arrow','/testarrow.png');
 	}
 	create() {
 		this.cameras.main.setBackgroundColor('#808080');
@@ -84,13 +94,27 @@ class L0 extends Phaser.Scene {
 		this.add.graphics().lineStyle(2, 0xffffff).strokeLineShape(new Phaser.Geom.Line(960, 360, 1280, 360));
 		this.add.graphics().lineStyle(2, 0xffffff).strokeLineShape(new Phaser.Geom.Line(960, 540, 1280, 540));
 		this.add.image(480, 360, 'background');
-		this.add.image(480, 360, 'locked_door');
+		this.add.image(480, 360, 'locked_door')
+			.setInteractive()
+			.setScale(0.1)
+            .on('pointerdown', () => {
+                if(items[KEY]) {
+					isLeveloneLock = false;
+					this.cameras.main.fade(1000, 0,0,0);
+                	this.time.delayedCall(1000, () => this.scene.start('LS'));
+				}
+            });
 		this.add.image(600, 360, 'unlocked_door')
 			.setInteractive()
+			.setScale(0.1)
             .on('pointerdown', () => {
                 this.cameras.main.fade(1000, 0,0,0);
                 this.time.delayedCall(1000, () => this.scene.start('L0_1'));
             });
+
+		if(items[KEY]) {
+			this.add.image(1050, 80, 'key');
+		}
 	}
 	update() {
     
@@ -111,7 +135,28 @@ class L0_1 extends Phaser.Scene {
 		this.add.graphics().lineStyle(2, 0xffffff).strokeLineShape(new Phaser.Geom.Line(960, 360, 1280, 360));
 		this.add.graphics().lineStyle(2, 0xffffff).strokeLineShape(new Phaser.Geom.Line(960, 540, 1280, 540));
 		this.add.image(480, 360, 'background');
-		this.add.image(480, 360, 'key');
+		this.add.image(600, 600, 'arrow')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => this.scene.start('L0'));
+            });
+
+		if(items[KEY]) {
+			this.add.image(1050, 80, 'key');		
+		}
+		else {
+			let key = this.add.image(480, 360, 'key')
+			.setInteractive()
+            .on('pointerdown', () => {
+                key.destroy();
+				this.add.image(1050, 80, 'key')
+				items[KEY] = true;
+            });
+		}
+		
+
+			
 	}
 	update() {
     
