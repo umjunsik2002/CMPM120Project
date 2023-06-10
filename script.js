@@ -1,8 +1,28 @@
-import items from './items.json' assert {type: 'json'};
 var isLeveloneLock = true;
 var isLeveltwoLock = true;
 var isLevelthreeLock = true;
-const KEY = 0;
+
+// Level 0
+import items_0 from './JSON/items_0.json' assert {type: 'json'};
+const KEY_0 = 0;
+
+// Level 1
+import items_1 from './JSON/items_1.json' assert {type: 'json'};
+const KEY_1 = 0;
+const KNIFE_1 = 1;
+const MESSAGECARD_1 = 2;
+
+// Level 2
+import items_2 from './JSON/items_2.json' assert {type: 'json'};
+const KEY_2 = 0;
+const MESSAGECARD_2 = 1;
+
+// Level 2
+import items_3 from './JSON/items_3.json' assert {type: 'json'};
+const KEY_3 = 0;
+const MESSAGECARD_3 = 1;
+const REMOVER_3 = 2;
+const BOTTLE_3 = 3;
 
 
 class LevelScene extends Phaser.Scene {
