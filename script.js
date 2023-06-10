@@ -121,8 +121,17 @@ class LS extends Phaser.Scene {
 			this.load.image('l3u','/Level3_unlocked.png');
 	}
 	create() {
-		for (let i = 0; i < items.length; i++) {
-			items[i].isOwn = false;
+		for (let i = 0; i < items_0.length; i++) {
+			items_0[i].isOwn = false;
+		}
+		for (let i = 0; i < items_1.length; i++) {
+			items_1[i].isOwn = false;
+		}
+		for (let i = 0; i < items_2.length; i++) {
+			items_2[i].isOwn = false;
+		}
+		for (let i = 0; i < items_3.length; i++) {
+			items_3[i].isOwn = false;
 		}
 
 		this.add.image(180, 360, 'l0u')
@@ -195,7 +204,7 @@ class L0 extends LevelScene {
 		this.add.image(320, 360, 'locked_door')
 			.setInteractive()
             .on('pointerdown', () => {
-                if(items[KEY].isOwn) {
+                if(items_0[KEY_0].isOwn) {
                     this.sound.play('door_open_sound');
 					this.cameras.main.fade(1000, 0,0,0);
                     this.time.delayedCall(1000, () => {
@@ -215,8 +224,8 @@ class L0 extends LevelScene {
             });
         
         // may replace with a display function later
-		if(items[KEY].isOwn) {
-			this.add.image(1040, 90, items[KEY].name);
+		if(items_0[KEY_0].isOwn) {
+			this.add.image(1040, 90, items_0[KEY_0].name);
 		}
     }
     update() {
@@ -243,17 +252,17 @@ class L0_1 extends LevelScene {
                 });
             });
 
-		if(items[KEY].isOwn) {
+		if(items_0[KEY_0].isOwn) {
 			this.add.image(1050, 80, items[KEY].name);		
 		}
 		else {
-			let key = this.add.image(480, 360, items[KEY].name)
+			let key = this.add.image(480, 360, items_0[KEY_0].name)
 			.setInteractive()
             .on('pointerdown', () => {
                 key.destroy();
                 this.sound.play('blop_sound');
-				this.add.image(1050, 80, items[KEY].name)
-				items[KEY].isOwn = true;
+				this.add.image(1050, 80, items_0[KEY_0].name)
+				items_0[KEY_0].isOwn = true;
             });
 
             this.tweens.add({
