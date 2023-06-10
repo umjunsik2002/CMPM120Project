@@ -17,6 +17,17 @@ class LevelScene extends Phaser.Scene {
         this.add.graphics().lineStyle(2, 0xffffff).strokeLineShape(new Phaser.Geom.Line(960, 360, 1280, 360));
         this.add.graphics().lineStyle(2, 0xffffff).strokeLineShape(new Phaser.Geom.Line(960, 540, 1280, 540));
         this.onEnter();
+
+		/*
+		0	1040, 90
+		1	1200, 90
+		2	1040, 270
+		3	1200, 270
+		4	1040, 450
+		5	1200, 450
+		6	1040, 630
+		7	1200, 630
+		*/
     }
 
     update() {
@@ -185,7 +196,7 @@ class L0 extends LevelScene {
         
         // may replace with a display function later
 		if(items[KEY].isOwn) {
-			this.add.image(1050, 80, items[KEY].name);
+			this.add.image(1040, 90, items[KEY].name);
 		}
     }
     update() {
