@@ -85,11 +85,15 @@ class LS extends Phaser.Scene {
 			this.load.image('l1l','/Level1_locked.png');
 			this.load.image('l1u','/Level1_unlocked.png');
 			this.load.image('l2l','/Level2_locked.png');
-		    this.load.image('l2u','/Level2_unlocked.png');
+			this.load.image('l2u','/Level2_unlocked.png');
 			this.load.image('l3l','/Level3_locked.png');
 			this.load.image('l3u','/Level3_unlocked.png');
 	}
 	create() {
+		for (let i = 0; i < items.length; i++) {
+			items[i].isOwn = false;
+		}
+
 		this.add.image(180, 360, 'l0u')
         .setInteractive()
         .on('pointerdown', () => {
