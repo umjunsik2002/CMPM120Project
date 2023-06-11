@@ -2,6 +2,17 @@ var isLeveloneLock = true;
 var isLeveltwoLock = true;
 var isLevelthreeLock = true;
 
+/*
+		0	1040, 90
+		1	1200, 90
+		2	1040, 270
+		3	1200, 270
+		4	1040, 450
+		5	1200, 450
+		6	1040, 630
+		7	1200, 630
+*/
+
 // Level 0
 import items_0 from './JSON/items_0.json' assert {type: 'json'};
 const KEY_0 = 0;
@@ -37,17 +48,28 @@ class LevelScene extends Phaser.Scene {
         this.add.graphics().lineStyle(2, 0xffffff).strokeLineShape(new Phaser.Geom.Line(960, 360, 1280, 360));
         this.add.graphics().lineStyle(2, 0xffffff).strokeLineShape(new Phaser.Geom.Line(960, 540, 1280, 540));
         this.onEnter();
+    }
 
-		/*
-		0	1040, 90
-		1	1200, 90
-		2	1040, 270
-		3	1200, 270
-		4	1040, 450
-		5	1200, 450
-		6	1040, 630
-		7	1200, 630
-		*/
+    displayItems(items) {
+        for(let i = 0; i < items.length; i++) {
+            if(items[i].isOwn) {
+                this.add.image(items[i].x, items[i].y, items[i].name);		
+            }
+        }
+    }
+
+    addMessagecard(x, y, name, isOwn, message) {
+        if (isOwn) {
+            this.add.image(x, y, name)
+            .setInteractive()
+            .on('pointerdown', () => {
+                let m = this.add.image(480, 360, message)
+                .setInteractive()
+                this.input.on('pointerup', () => {
+                    m.destroy();
+                });
+            });
+        }
     }
 
     update() {
@@ -55,11 +77,17 @@ class LevelScene extends Phaser.Scene {
 
     onEnter() {
     }
+
+
 }
 
 class UIScene extends Phaser.Scene {
     constructor() {
         super();
+    }
+	preload() {
+        this.load.path = './assets/';
+        this.load.audio('music', 'Tchaikovsky_dance_of_the_sugar_plum_fairy.mp3');
     }
     create() {
         this.w = this.game.config.width;
@@ -75,6 +103,9 @@ class UIScene extends Phaser.Scene {
                     this.scale.startFullscreen();
                 }
             });
+		
+		const music = this.sound.add('music', { loop: true });
+		music.play();
     }
 }
 
@@ -84,16 +115,13 @@ class start extends Phaser.Scene {
     }
     preload() {
         this.load.path = './assets/';
-        this.load.audio('music', 'Tchaikovsky_dance_of_the_sugar_plum_fairy.mp3');
     }
     create() {
         this.cameras.main.setBackgroundColor('#FFFFFF');
         this.add.text(640, 240, "Escape", { fontSize: 64, color: '#000000' }).setOrigin(0.5);
         this.add.text(640, 480, "Start Screen\nTap the screen to continue", { fontSize: 48, color: '#000000' }).setOrigin(0.5);
-
-        const music = this.sound.add('music', { loop: true });
-        music.play();
-        this.scene.add('UIScene', UIScene, true);
+        
+		this.scene.add('UIScene', UIScene, true);
 
         this.input.on('pointerup', () => {
             this.cameras.main.fade(1000, 0,0,0);
@@ -201,11 +229,12 @@ class L0 extends LevelScene {
     }
     onEnter() {
         this.add.image(480, 360, 'background');
-		this.add.image(320, 360, 'locked_door')
+		let lockedDoor = this.add.image(320, 360, 'locked_door')
 			.setInteractive()
             .on('pointerdown', () => {
                 if(items_0[KEY_0].isOwn) {
                     this.sound.play('door_open_sound');
+					lockedDoor.setTexture('unlocked_door');
 					this.cameras.main.fade(1000, 0,0,0);
                     this.time.delayedCall(1000, () => {
 						isLeveloneLock = false;
@@ -223,10 +252,7 @@ class L0 extends LevelScene {
                 });
             });
         
-        // may replace with a display function later
-		if(items_0[KEY_0].isOwn) {
-			this.add.image(1040, 90, items_0[KEY_0].name);
-		}
+		this.displayItems(items_0);
     }
     update() {
 
@@ -242,7 +268,7 @@ class L0_1 extends LevelScene {
 	}
 	onEnter() {
 		this.add.image(480, 360, 'background');
-		this.add.image(600, 600, 'arrow')
+		this.add.image(840, 640, 'arrow')
 			.setInteractive()
             .on('pointerdown', () => {
                 this.sound.play('blop_sound');
@@ -252,16 +278,13 @@ class L0_1 extends LevelScene {
                 });
             });
 
-		if(items_0[KEY_0].isOwn) {
-			this.add.image(1050, 80, items[KEY].name);		
-		}
-		else {
+		if(items_0[KEY_0].isOwn == false) {
 			let key = this.add.image(480, 360, items_0[KEY_0].name)
 			.setInteractive()
             .on('pointerdown', () => {
                 key.destroy();
                 this.sound.play('blop_sound');
-				this.add.image(1050, 80, items_0[KEY_0].name)
+				this.add.image(items_0[KEY_0].x, items_0[KEY_0].y, items_0[KEY_0].name);
 				items_0[KEY_0].isOwn = true;
             });
 
@@ -272,7 +295,9 @@ class L0_1 extends LevelScene {
                 ease: 'Linear',
                 repeat: -1,
             });
-		}			
+		}	
+        
+        this.displayItems(items_0);
 	}
 	update() {
     
@@ -284,21 +309,151 @@ class L1 extends LevelScene {
         super('L1');
     }
     preload() {
-        this.load.path = './assets/';
-        this.load.image('bg1','/level1_background.png');
+        this.load.path = './assets/Level1/';
+		this.load.image('bedroom','/bedroom.png');
+		this.load.image('kitchen','/kitchen.png');
+		this.load.image('knife','/knife.png');
+		this.load.image('messagecard','/messagecard.png');
+		this.load.image('message1','/messagecard-opened.png');
+		this.load.image('vase','/vase.png');
+        this.load.image('pillow','/pillow.png');
     }
     onEnter() {
-        this.add.image(480, 360, 'bg1');
-        this.add.text(640, 240, "Level 1", { fontSize: 64, color: '#000000' }).setOrigin(0.5);
+        this.add.image(480, 360, 'background');
 
-        this.input.on('pointerup', () => {
-            this.cameras.main.fade(1000, 0,0,0);
-			this.time.delayedCall(1000, () => this.scene.start('L2'));
-        });
+		this.add.image(240, 360, 'unlocked_door')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.sound.play('door_open_sound');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L1_1');
+                });
+            });
+		
+		this.add.image(480, 360, 'locked_door')
+			.setInteractive()
+            .on('pointerdown', () => {
+                if(items_1[KEY_1].isOwn) {
+                    this.sound.play('door_open_sound');
+					this.cameras.main.fade(1000, 0,0,0);
+                    this.time.delayedCall(1000, () => {
+						isLeveltwoLock = false;
+                        this.scene.start('LS');
+                    });
+				}
+            });
+
+		this.add.image(720, 360, 'unlocked_door')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.sound.play('door_open_sound');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L1_2');
+                });
+            });
+		
+        this.displayItems(items_1);	
+        this.addMessagecard(items_1[MESSAGECARD_1].x, 
+                            items_1[MESSAGECARD_1].y, 
+                            items_1[MESSAGECARD_1].name, 
+                            items_1[MESSAGECARD_1].isOwn,
+                            'message1');
     }
     update() {
 
     }
+}
+
+class L1_1 extends LevelScene {
+    constructor() {
+        super('L1_1');
+    }
+	onEnter() {
+		this.add.image(480, 360, 'bedroom');
+
+		this.add.image(840, 640, 'arrow')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.sound.play('blop_sound');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L1');
+                });
+            });
+
+        this.add.image(800, 465, 'vase')
+        .setInteractive()
+        .on('pointerdown', () => {
+            if(items_1[MESSAGECARD_1].isOwn == false) {
+                this.sound.play('blop_sound');
+                items_1[MESSAGECARD_1].isOwn = true;
+        	    this.addMessagecard(items_1[MESSAGECARD_1].x, 
+                            	    items_1[MESSAGECARD_1].y, 
+                            	    items_1[MESSAGECARD_1].name, 
+                            	    items_1[MESSAGECARD_1].isOwn,
+                            	    'message1');
+            }
+        });
+		
+        this.add.image(480, 360, 'pillow')
+        .setInteractive()
+        .on('pointerdown', () => {
+            if(items_1[KEY_1].isOwn == false && items_1[KNIFE_1].isOwn == true) {
+                this.sound.play('blop_sound');
+                items_1[KEY_1].isOwn = true;
+        	    //this.add.image(items_0[KEY_0].x, items_0[KEY_0].y, items_0[KEY_0].name);
+                items_1[KNIFE_1].isOwn == false;
+                this.displayItems(items_1);
+            }
+        });
+
+        this.displayItems(items_1);
+        this.addMessagecard(items_1[MESSAGECARD_1].x, 
+                            items_1[MESSAGECARD_1].y, 
+                            items_1[MESSAGECARD_1].name, 
+                            items_1[MESSAGECARD_1].isOwn,
+                            'message1');
+	}
+}
+
+class L1_2 extends LevelScene {
+    constructor() {
+        super('L1_2');
+    }
+	onEnter() {
+		this.add.image(480, 360, 'kitchen');
+
+		this.add.image(840, 640, 'arrow')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.sound.play('blop_sound');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L1');
+                });
+            });
+
+		if(items_1[KNIFE_1].isOwn == false) {
+			let knife = this.add.image(480, 360, items_1[KNIFE_1].name)
+			.setInteractive()
+            .on('pointerdown', () => {
+                knife.destroy();
+                this.sound.play('blop_sound');
+				this.add.image(items_1[KNIFE_1].x, items_1[KNIFE_1].y, items_1[KNIFE_1].name);
+				items_1[KNIFE_1].isOwn = true;
+            });
+		}
+
+
+        this.displayItems(items_1);
+        this.addMessagecard(items_1[MESSAGECARD_1].x, 
+                            items_1[MESSAGECARD_1].y, 
+                            items_1[MESSAGECARD_1].name, 
+                            items_1[MESSAGECARD_1].isOwn,
+                            'message1');
+	}
 }
 
 class L2 extends LevelScene {
@@ -307,10 +462,9 @@ class L2 extends LevelScene {
     }
     preload() {
         this.load.path = './assets/';
-        this.load.image('bg2','/level2_background.png');
     }
     onEnter() {
-        this.add.image(480, 360, 'bg2');
+        this.add.image(480, 360, 'background');
         this.add.text(640, 240, "Level 2", { fontSize: 64, color: '#000000' }).setOrigin(0.5);
     }
     update() {
@@ -345,7 +499,7 @@ let config = {
         height: 720
     },
 	backgroundColor: '#ffffff',
-	scene: [start, LS, L0, L0_1, L1, L2, L3]
+	scene: [start, LS, L0, L0_1, L1, L1_1, L1_2, L2, L3]
 }
 
 let game = new Phaser.Game(config);
