@@ -331,11 +331,12 @@ class L1 extends LevelScene {
                 });
             });
 		
-		this.add.image(480, 360, 'locked_door')
+			let lockedDoor = this.add.image(480, 360, 'locked_door')
 			.setInteractive()
             .on('pointerdown', () => {
                 if(items_1[KEY_1].isOwn) {
                     this.sound.play('door_open_sound');
+					lockedDoor.setTexture('unlocked_door');
 					this.cameras.main.fade(1000, 0,0,0);
                     this.time.delayedCall(1000, () => {
 						isLeveltwoLock = false;
@@ -397,15 +398,13 @@ class L1_1 extends LevelScene {
             }
         });
 		
-        this.add.image(480, 360, 'pillow')
+        this.add.image(102, 450, 'pillow')
         .setInteractive()
         .on('pointerdown', () => {
             if(items_1[KEY_1].isOwn == false && items_1[KNIFE_1].isOwn == true) {
                 this.sound.play('blop_sound');
                 items_1[KEY_1].isOwn = true;
-        	    //this.add.image(items_0[KEY_0].x, items_0[KEY_0].y, items_0[KEY_0].name);
-                items_1[KNIFE_1].isOwn == false;
-                this.displayItems(items_1);
+        	    this.add.image(items_0[KEY_0].x, items_0[KEY_0].y, items_0[KEY_0].name);
             }
         });
 
