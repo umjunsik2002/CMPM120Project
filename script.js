@@ -1,6 +1,7 @@
 var isLeveloneLock = true;
 var isLeveltwoLock = true;
 var isLevelthreeLock = true;
+var isSeenPassword = false
 
 /*
 		0	1040, 90
@@ -103,9 +104,21 @@ class UIScene extends Phaser.Scene {
                     this.scale.startFullscreen();
                 }
             });
-		
+
 		const music = this.sound.add('music', { loop: true });
 		music.play();
+
+		this.add.text(this.w - 6 * this.s, this.h - 3 * this.s, "🔊")
+            .setStyle({ fontSize: `${2 * this.s}px` })
+            .setInteractive({ useHandCursor: true })
+            .on('pointerdown', () => {
+				if (music.volume === 0) {
+					music.setVolume(1);
+				}
+				else {
+					music.setVolume(0);
+				}
+            });
     }
 }
 
@@ -161,6 +174,8 @@ class LS extends Phaser.Scene {
 		for (let i = 0; i < items_3.length; i++) {
 			items_3[i].isOwn = false;
 		}
+
+        isSeenPassword = false;
 
 		this.add.image(180, 360, 'l0u')
         .setInteractive()
@@ -460,14 +475,165 @@ class L2 extends LevelScene {
         super('L2');
     }
     preload() {
-        this.load.path = './assets/';
+        this.load.path = './assets/Level2/';
+		this.load.image('lock','/newlock.png');
+		this.load.image('lock_unlocked', '/newlock_unlocked.png');
+		this.load.image('studyroom','/studyroom.png');
+		this.load.image('table_with_paper','/table_with_paper.png');
+		this.load.image('password','/topviewtable.png');
+		this.load.image('wardrobe','/wardrobe.png');
+        this.load.image('message2','/message2.png');
     }
     onEnter() {
         this.add.image(480, 360, 'background');
-        this.add.text(640, 240, "Level 2", { fontSize: 64, color: '#000000' }).setOrigin(0.5);
+        this.add.image(240, 360, 'unlocked_door')
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.sound.play('door_open_sound');
+            this.cameras.main.fade(1000, 0,0,0);
+            this.time.delayedCall(1000, () => {
+                this.scene.start('L2_1');
+            });
+        });
+    
+		let lockedDoor1 = this.add.image(480, 360, 'locked_door')
+		.setInteractive()
+		.on('pointerdown', () => {
+			if (isSeenPassword) {
+				let lu = this.add.image(480, 360, 'lock_unlocked')
+					.setInteractive()
+					.on('pointerdown', () => {
+						lu.destroy();
+						this.sound.play('door_open_sound');
+						lockedDoor1.setTexture('unlocked_door');
+						this.cameras.main.fade(1000, 0, 0, 0);
+						this.time.delayedCall(1000, () => {
+							isLevelthreeLock = false;
+							this.scene.start('LS');
+						});
+					});
+			} 
+			else {
+				let l = this.add.image(480, 360, 'lock')
+					.setInteractive()
+					.on('pointerdown', () => {
+						l.destroy();
+					});
+			}
+		});
+	
+
+        let lockedDoor2 = this.add.image(720, 360, 'locked_door')
+        .setInteractive()
+        .on('pointerdown', () => {
+            if(items_2[KEY_2].isOwn) {
+                this.sound.play('door_open_sound');
+                lockedDoor2.setTexture('unlocked_door');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L2_2');
+                });
+            }
+        });
+
+        this.displayItems(items_2);
+        this.addMessagecard(items_2[MESSAGECARD_2].x, 
+                            items_2[MESSAGECARD_2].y, 
+                            items_2[MESSAGECARD_2].name, 
+                            items_2[MESSAGECARD_2].isOwn,
+                            'message2');
     }
     update() {
 
+    }
+}
+
+class L2_1 extends LevelScene {
+    constructor() {
+        super('L2_1');
+    }
+
+    onEnter() {
+        this.add.image(480, 360, 'bedroom');
+
+		this.add.image(840, 640, 'arrow')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.sound.play('blop_sound');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L2');
+                });
+            });
+
+		this.add.image(800, 465, 'vase')
+			.setInteractive()
+			.on('pointerdown', () => {
+				if(items_2[MESSAGECARD_2].isOwn == false) {
+					this.sound.play('blop_sound');
+					items_2[MESSAGECARD_2].isOwn = true;
+					this.addMessagecard(items_2[MESSAGECARD_2].x, 
+										items_2[MESSAGECARD_2].y, 
+										items_2[MESSAGECARD_2].name, 
+										items_2[MESSAGECARD_2].isOwn,
+										'message2');
+				}
+			});
+            
+        this.add.image(551, 366, 'wardrobe')
+            .setInteractive()
+            .on('pointerdown', () => {
+                if(items_2[KEY_2].isOwn == false) {
+                    this.sound.play('blop_sound');
+                    items_2[KEY_2].isOwn = true;
+                    this.add.image(items_2[KEY_2].x, items_0[KEY_2].y, items_0[KEY_2].name);
+                }
+            });
+
+        this.displayItems(items_2);
+        this.addMessagecard(items_2[MESSAGECARD_2].x, 
+                            items_2[MESSAGECARD_2].y, 
+                            items_2[MESSAGECARD_2].name, 
+                            items_2[MESSAGECARD_2].isOwn,
+                            'message2');
+    }
+}
+
+class L2_2 extends LevelScene {
+    constructor() {
+        super('L2_2');
+    }
+
+    onEnter() {
+        this.add.image(480, 360, 'studyroom');
+
+		this.add.image(840, 640, 'arrow')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.sound.play('blop_sound');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L2');
+                });
+            });
+
+        this.add.image(213, 486, 'table_with_paper')
+            .setInteractive()
+            .on('pointerdown', () => {
+                isSeenPassword = true;
+                let p = this.add.image(480, 360, 'password')
+                .setInteractive()
+                this.input.on('pointerup', () => {
+                    p.destroy();
+                });
+            });
+
+        this.displayItems(items_2);
+        this.addMessagecard(items_2[MESSAGECARD_2].x, 
+                            items_2[MESSAGECARD_2].y, 
+                            items_2[MESSAGECARD_2].name, 
+                            items_2[MESSAGECARD_2].isOwn,
+                            'message2');
     }
 }
 
@@ -498,7 +664,7 @@ let config = {
         height: 720
     },
 	backgroundColor: '#ffffff',
-	scene: [start, LS, L0, L0_1, L1, L1_1, L1_2, L2, L3]
+	scene: [start, LS, L0, L0_1, L1, L1_1, L1_2, L2, L2_1, L2_2, L3]
 }
 
 let game = new Phaser.Game(config);
