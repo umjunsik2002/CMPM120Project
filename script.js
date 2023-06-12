@@ -79,6 +79,9 @@ class UIScene extends Phaser.Scene {
         this.load.audio('music', 'Tchaikovsky_dance_of_the_sugar_plum_fairy.mp3');
     }
     create() {
+        const music = this.sound.add('music', { loop: true });
+		music.play();
+
         this.w = this.game.config.width;
         this.h = this.game.config.height;
         this.s = this.game.config.width * 0.01;
@@ -92,9 +95,6 @@ class UIScene extends Phaser.Scene {
                     this.scale.startFullscreen();
                 }
             });
-
-		const music = this.sound.add('music', { loop: true });
-		music.play();
 
 		this.add.text(this.w - 6 * this.s, this.h - 3 * this.s, "🔊")
             .setStyle({ fontSize: `${2 * this.s}px` })
