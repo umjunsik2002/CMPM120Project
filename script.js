@@ -1,18 +1,7 @@
 var isLeveloneLock = true;
 var isLeveltwoLock = true;
 var isLevelthreeLock = true;
-var isSeenPassword = false
-
-/*
-		0	1040, 90
-		1	1200, 90
-		2	1040, 270
-		3	1200, 270
-		4	1040, 450
-		5	1200, 450
-		6	1040, 630
-		7	1200, 630
-*/
+var isSeenPassword = false;
 
 // Level 0
 import items_0 from './JSON/items_0.json' assert {type: 'json'};
@@ -33,8 +22,7 @@ const MESSAGECARD_2 = 1;
 import items_3 from './JSON/items_3.json' assert {type: 'json'};
 const KEY_3 = 0;
 const MESSAGECARD_3 = 1;
-const REMOVER_3 = 2;
-const BOTTLE_3 = 3;
+const BOTTLE_3 = 2;
 
 
 class LevelScene extends Phaser.Scene {
@@ -160,6 +148,7 @@ class LS extends Phaser.Scene {
 			this.load.image('l2u','/Level2_unlocked.png');
 			this.load.image('l3l','/Level3_locked.png');
 			this.load.image('l3u','/Level3_unlocked.png');
+            this.load.image('tb','/TitleBackground.png');
 	}
 	create() {
 		for (let i = 0; i < items_0.length; i++) {
@@ -176,6 +165,10 @@ class LS extends Phaser.Scene {
 		}
 
         isSeenPassword = false;
+
+        items_3[BOTTLE_3].name = "bottle";
+
+        this.add.image(640, 360, 'tb');
 
 		this.add.image(180, 360, 'l0u')
         .setInteractive()
@@ -450,7 +443,7 @@ class L1_2 extends LevelScene {
             });
 
 		if(items_1[KNIFE_1].isOwn == false) {
-			let knife = this.add.image(480, 360, items_1[KNIFE_1].name)
+			let knife = this.add.image(790, 280, items_1[KNIFE_1].name)
 			.setInteractive()
             .on('pointerdown', () => {
                 knife.destroy();
@@ -623,7 +616,7 @@ class L2_2 extends LevelScene {
                 isSeenPassword = true;
                 let p = this.add.image(480, 360, 'password')
                 .setInteractive()
-                this.input.on('pointerup', () => {
+                .on('pointerdown', () => {
                     p.destroy();
                 });
             });
@@ -637,20 +630,165 @@ class L2_2 extends LevelScene {
     }
 }
 
-class L3 extends Phaser.Scene {
+class L3 extends LevelScene {
 	constructor() {
 		super('L3');
 	}
 	preload() {
 		this.load.path = './assets/Level3/';
+        this.load.image('bathroom','/bathroom.png');
+		this.load.image('lwor', '/lock_without_rust.png');
+		this.load.image('lwr','/lock_with_rust.png');
+		this.load.image('washbasin','/washbasin.png');
+		this.load.image('message3','/message3.png');
+		this.load.image('remover','/remover.png');
+        this.load.image('bottle','/bottle.png');
+        this.load.image('bww','/bottle_with_water.png');
+        this.load.image('bwr','/bottle_with_remover.png');
 	}
-	create() {
-		this.cameras.main.setBackgroundColor('#808080');
-		this.add.text(50, 50, "Level 3", { fontSize: 50, color: '#000000' });
+	onEnter() {
+		this.add.image(480, 360, 'background');
+        
+        items_3[KEY_3].isOwn = true;
+        items_3[MESSAGECARD_3].isOwn = true;
+
+		this.add.image(240, 360, 'unlocked_door')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.sound.play('door_open_sound');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L3_1');
+                });
+            });
+		
+		let lockedDoor = this.add.image(480, 360, 'locked_door')
+		.setInteractive()
+		.on('pointerdown', () => {
+			if (items_3[BOTTLE_3].name == 'bwr') {
+				let lu = this.add.image(480, 360, 'lwor')
+					.setInteractive()
+					.on('pointerdown', () => {
+						lu.destroy();
+						this.sound.play('door_open_sound');
+						lockedDoor.setTexture('unlocked_door');
+						this.cameras.main.fade(1000, 0, 0, 0);
+						this.time.delayedCall(1000, () => {
+							this.scene.start('LS');
+						});
+					});
+			} 
+			else {
+				let l = this.add.image(480, 360, 'lwr')
+					.setInteractive()
+					.on('pointerdown', () => {
+						l.destroy();
+					});
+			}
+		});
+
+		this.add.image(720, 360, 'unlocked_door')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.sound.play('door_open_sound');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L3_2');
+                });
+            });
+		
+        this.displayItems(items_3);
+        this.addMessagecard(items_3[MESSAGECARD_3].x, 
+                            items_3[MESSAGECARD_3].y, 
+                            items_3[MESSAGECARD_3].name, 
+                            items_3[MESSAGECARD_3].isOwn,
+                            'message3');
+                                
 	}
 	update() {
     
 	}
+}
+
+class L3_1 extends LevelScene {
+	constructor() {
+		super('L3_1');
+	}
+    onEnter() {
+        this.add.image(480, 360, 'kitchen');
+        this.add.image(840, 640, 'arrow')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.sound.play('blop_sound');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L3');
+                });
+            });
+
+        if(items_3[BOTTLE_3].isOwn == false) {
+			let bottle = this.add.image(790, 326, items_3[BOTTLE_3].name)
+			.setInteractive()
+            .on('pointerdown', () => {
+                bottle.destroy();
+                this.sound.play('blop_sound');
+				this.add.image(items_3[BOTTLE_3].x, items_3[BOTTLE_3].y, items_3[BOTTLE_3].name);
+				items_3[BOTTLE_3].isOwn = true;
+            });
+		}
+
+        this.displayItems(items_3);
+        this.addMessagecard(items_3[MESSAGECARD_3].x, 
+                            items_3[MESSAGECARD_3].y, 
+                            items_3[MESSAGECARD_3].name, 
+                            items_3[MESSAGECARD_3].isOwn,
+                            'message3');
+    }
+}
+
+class L3_2 extends LevelScene {
+	constructor() {
+		super('L3_2');
+	}
+    onEnter() {
+        this.add.image(480, 360, 'bathroom');
+        this.add.image(840, 640, 'arrow')
+			.setInteractive()
+            .on('pointerdown', () => {
+                this.sound.play('blop_sound');
+                this.cameras.main.fade(1000, 0,0,0);
+                this.time.delayedCall(1000, () => {
+                    this.scene.start('L3');
+                });
+            });
+        
+        this.add.image(800, 465, 'washbasin')
+        .setInteractive()
+        .on('pointerdown', () => {
+            if(items_3[BOTTLE_3].isOwn == true && items_3[BOTTLE_3].name == "bottle") {
+                this.sound.play('blop_sound');
+                items_3[BOTTLE_3].name = "bww";
+                this.add.image(items_3[BOTTLE_3].x, items_3[BOTTLE_3].y, items_3[BOTTLE_3].name);
+            }
+        });
+
+        this.add.image(505, 78, 'remover')
+        .setInteractive()
+        .on('pointerdown', () => {
+            if(items_3[BOTTLE_3].isOwn == true && items_3[BOTTLE_3].name == "bww") {
+                this.sound.play('blop_sound');
+                items_3[BOTTLE_3].name = "bwr";
+                this.add.image(items_3[BOTTLE_3].x, items_3[BOTTLE_3].y, items_3[BOTTLE_3].name);
+            }
+        });
+
+        this.displayItems(items_3);
+        this.addMessagecard(items_3[MESSAGECARD_3].x, 
+                            items_3[MESSAGECARD_3].y, 
+                            items_3[MESSAGECARD_3].name, 
+                            items_3[MESSAGECARD_3].isOwn,
+                            'message3');
+    }
 }
 
 
@@ -664,7 +802,7 @@ let config = {
         height: 720
     },
 	backgroundColor: '#ffffff',
-	scene: [start, LS, L0, L0_1, L1, L1_1, L1_2, L2, L2_1, L2_2, L3]
+	scene: [start, LS, L0, L0_1, L1, L1_1, L1_2, L2, L2_1, L2_2, L3, L3_1, L3_2]
 }
 
 let game = new Phaser.Game(config);
