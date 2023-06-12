@@ -19,6 +19,6 @@ selection page is made by Tone.js
 - 
 
 # Asset credits
-- Pickup item sound:
-- Open door sound:
-- Background music: 
+- Pickup item sound: https://youtu.be/CSJOElshehk
+- Open door sound: https://youtu.be/hPjXwR8kFJg
+- Background music: https://youtu.be/sdduPpnqre4 (Dance of the Sugar Plum Fairy by Tchaikovsky)
