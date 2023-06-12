@@ -188,6 +188,8 @@ class LS extends Phaser.Scene {
 			this.load.image('l3u','/Level3_unlocked.png');
 	}
 	create() {
+
+        // reset items
 		for (let i = 0; i < items_0.length; i++) {
 			items_0[i].isOwn = false;
 		}
@@ -200,9 +202,7 @@ class LS extends Phaser.Scene {
 		for (let i = 0; i < items_3.length; i++) {
 			items_3[i].isOwn = false;
 		}
-
         isSeenPassword = false;
-
         items_3[BOTTLE_3].name = "bottle";
 
         this.add.image(640, 360, 'tb');
@@ -383,7 +383,7 @@ class L1 extends LevelScene {
 		this.load.image('knife','/knife.png');
 		this.load.image('messagecard','/messagecard.png');
 		this.load.image('message1','/messagecard-opened.png');
-		this.load.image('vase','/vase.png');
+		this.load.image('vase','/Vase.png');
         this.load.image('pillow','/pillow.png');
     }
     onEnter() {
@@ -452,7 +452,7 @@ class L1_1 extends LevelScene {
                 });
             });
 
-        this.add.image(800, 465, 'vase')
+        this.add.image(800, 475, 'vase')
         .setInteractive()
         .on('pointerdown', () => {
             if(items_1[MESSAGECARD_1].isOwn == false) {
@@ -642,7 +642,7 @@ class L2_1 extends LevelScene {
                 });
             });
 
-		this.add.image(800, 465, 'vase')
+		this.add.image(800, 475, 'vase')
 			.setInteractive()
 			.on('pointerdown', () => {
 				if(items_2[MESSAGECARD_2].isOwn == false) {
@@ -868,7 +868,7 @@ class L3_2 extends LevelScene {
                 });
             });
         
-        this.add.image(800, 465, 'washbasin')
+        this.add.image(800, 455, 'washbasin')
         .setInteractive()
         .on('pointerdown', () => {
             if(items_3[BOTTLE_3].isOwn == true && items_3[BOTTLE_3].name == "bottle") {
