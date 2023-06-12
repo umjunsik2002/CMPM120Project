@@ -383,7 +383,7 @@ class L1 extends LevelScene {
 		this.load.image('knife','/knife.png');
 		this.load.image('messagecard','/messagecard.png');
 		this.load.image('message1','/messagecard-opened.png');
-		this.load.image('vase','/Vase.png');
+		this.load.image('vase','/vase.png');
         this.load.image('pillow','/pillow.png');
     }
     onEnter() {
