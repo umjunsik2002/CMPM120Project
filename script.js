@@ -31,6 +31,7 @@ const KEY_3 = 0;
 const MESSAGECARD_3 = 1;
 const BOTTLE_3 = 2;
 
+const synth = new Tone.Synth().toDestination();
 
 class LevelScene extends Phaser.Scene {
     constructor(key) {
@@ -199,6 +200,10 @@ class LS extends Phaser.Scene {
 			this.load.image('l2u','/Level2_unlocked.png');
 			this.load.image('l3l','/Level3_locked.png');
 			this.load.image('l3u','/Level3_unlocked.png');
+
+            this.load.path = './assets/Sound/';
+            this.load.audio('blop_sound', '/blop_sound_effect.mp3');
+            this.load.audio('door_open_sound', '/door_open_sound_effect.mp3');
 	}
 	create() {
 
@@ -223,17 +228,23 @@ class LS extends Phaser.Scene {
 		this.add.image(180, 360, 'l0u')
         .setInteractive()
         .on('pointerdown', () => {
+            this.sound.play('door_open_sound');
             this.cameras.main.fade(1000, 0,0,0);
 			this.time.delayedCall(1000, () => this.scene.start('L0'));
 		});
 
 		if(isLeveloneLock) {
 			this.add.image(480, 360, 'l1l')
+            .setInteractive()
+            .on('pointerdown', () => {
+            synth.triggerAttackRelease("G2", "8n");
+		});
         }
 		else {
             this.add.image(480, 360, 'l1u')
             .setInteractive()
             .on('pointerdown', () => {
+                this.sound.play('door_open_sound');
                 this.cameras.main.fade(1000, 0,0,0);
                 this.time.delayedCall(1000, () => this.scene.start('L1'));
             });
@@ -241,11 +252,16 @@ class LS extends Phaser.Scene {
 
 		if(isLeveltwoLock) {
 			this.add.image(780, 360, 'l2l')
+            .setInteractive()
+            .on('pointerdown', () => {
+            synth.triggerAttackRelease("G2", "8n");
+		});
         }
 		else {
             this.add.image(780, 360, 'l2u')
             .setInteractive()
             .on('pointerdown', () => {
+                this.sound.play('door_open_sound');
                 this.cameras.main.fade(1000, 0,0,0);
                 this.time.delayedCall(1000, () => this.scene.start('L2'));
             });
@@ -253,11 +269,16 @@ class LS extends Phaser.Scene {
 
 		if(isLevelthreeLock) {
 			this.add.image(1080, 360, 'l3l')
+            .setInteractive()
+            .on('pointerdown', () => {
+            synth.triggerAttackRelease("G2", "8n");
+		});
         }
 		else {
             this.add.image(1080, 360, 'l3u')
             .setInteractive()
             .on('pointerdown', () => {
+                this.sound.play('door_open_sound');
                 this.cameras.main.fade(1000, 0,0,0);
                 this.time.delayedCall(1000, () => this.scene.start('L3'));
             });
@@ -280,10 +301,6 @@ class L0 extends LevelScene {
 		this.load.image('locked_door','/door.png');
 		this.load.image('key','/key.png');
 		this.load.image('arrow','/arrowUI.png');
-
-        this.load.path = './assets/Sound/';
-        this.load.audio('blop_sound', '/blop_sound_effect.mp3');
-        this.load.audio('door_open_sound', '/door_open_sound_effect.mp3');
     }
     onEnter() {
         this.add.image(480, 360, 'background');
