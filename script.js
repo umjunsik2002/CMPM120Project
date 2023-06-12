@@ -3,9 +3,6 @@ var isLeveltwoLock = true;
 var isLevelthreeLock = true;
 var isSeenPassword = false;
 
-function loadJson(items, data) {
-    items = data;
-}
 // Level 0
 // import items_0 from './JSON/items_0.json' assert {type: 'json'};
 var items_0 = [];
@@ -89,12 +86,10 @@ class UIScene extends Phaser.Scene {
     create() {
         const music = this.sound.add('music', { loop: true });
 		music.play();
-
-        this.w = this.game.config.width;
-        this.h = this.game.config.height;
-        this.s = this.game.config.width * 0.01;
-        this.add.text(this.w - 3 * this.s, this.h - 3 * this.s, "📺")
-            .setStyle({ fontSize: `${2 * this.s}px` })
+        
+        this.add.text(40, 40, "📺")
+            .setOrigin(0.5)
+            .setStyle({ fontSize: 48 })
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => {
                 if (this.scale.isFullscreen) {
@@ -104,8 +99,9 @@ class UIScene extends Phaser.Scene {
                 }
             });
 
-		this.add.text(this.w - 6 * this.s, this.h - 3 * this.s, "🔊")
-            .setStyle({ fontSize: `${2 * this.s}px` })
+		this.add.text(100, 40, "🔊")
+            .setOrigin(0.5)
+            .setStyle({ fontSize: 48 })
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => {
 				if (music.volume === 0) {
