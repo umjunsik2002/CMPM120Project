@@ -3,23 +3,30 @@ var isLeveltwoLock = true;
 var isLevelthreeLock = true;
 var isSeenPassword = false;
 
+function loadJson(items, data) {
+    items = data;
+}
 // Level 0
-import items_0 from './JSON/items_0.json' assert {type: 'json'};
+// import items_0 from './JSON/items_0.json' assert {type: 'json'};
+var items_0 = [];
 const KEY_0 = 0;
 
 // Level 1
-import items_1 from './JSON/items_1.json' assert {type: 'json'};
+// import items_1 from './JSON/items_1.json' assert {type: 'json'};
+var items_1 = [];
 const KEY_1 = 0;
 const KNIFE_1 = 1;
 const MESSAGECARD_1 = 2;
 
 // Level 2
-import items_2 from './JSON/items_2.json' assert {type: 'json'};
+// import items_2 from './JSON/items_2.json' assert {type: 'json'};
+var items_2 = [];
 const KEY_2 = 0;
 const MESSAGECARD_2 = 1;
 
 // Level 2
-import items_3 from './JSON/items_3.json' assert {type: 'json'};
+// import items_3 from './JSON/items_3.json' assert {type: 'json'};
+var items_3 = [];
 const KEY_3 = 0;
 const MESSAGECARD_3 = 1;
 const BOTTLE_3 = 2;
@@ -115,9 +122,12 @@ class Title extends Phaser.Scene {
         super({ key: 'Title' });
     }
     preload() {
-        this.load.path = './assets/LevelUI';
-        this.load.image('tb','/TitleBackground.png');
-        this.load.image('t','/Text.png');
+        this.load.image('tb','assets/LevelUI/TitleBackground.png');
+        this.load.image('t','assets/LevelUI/Text.png');
+        this.load.json('items_0', 'JSON/items_0.json');
+        this.load.json('items_1', 'JSON/items_1.json');
+        this.load.json('items_2', 'JSON/items_2.json');
+        this.load.json('items_3', 'JSON/items_3.json');
     }
     create() {
         this.add.image(640, 360, 'tb');
@@ -160,7 +170,10 @@ class Title extends Phaser.Scene {
             ]
         });
 
-       
+        items_0 = this.cache.json.get('items_0');
+        items_1 = this.cache.json.get('items_1');
+        items_2 = this.cache.json.get('items_2');
+        items_3 = this.cache.json.get('items_3');
         
         this.input.on('pointerup', () => {
             this.cameras.main.fade(1000, 0,0,0);
